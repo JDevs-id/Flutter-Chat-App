@@ -1,8 +1,9 @@
+import 'package:UserManagement/global/behavior.dart';
 import 'package:UserManagement/global/color.dart';
-import 'package:UserManagement/menu/login.dart';
+import 'package:UserManagement/global/url.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:route_transitions/route_transitions.dart';
+import 'package:http/http.dart' as http;
 
 class Registration extends StatefulWidget {
   @override
@@ -15,6 +16,20 @@ class _RegistrationState extends State<Registration> {
   TextEditingController contRePassword = TextEditingController();
 
   void addUser() {
+    var url = "$BASE_URL/addUser.php";
+    if (contPassword.text == contRePassword.text) {
+      http.post(url, body: {
+        "username": contUsername.text,
+        "password": contPassword.text,
+        "repassword": contRePassword.text,
+      });
+      contUsername.text = "";
+      contPassword.text = "";
+      contRePassword.text = "";
+      Navigator.pop(context);
+    } else {
+      showToastAlert("Your password and repeat password is not same!");
+    }
   }
 
   @override
@@ -41,6 +56,7 @@ class _RegistrationState extends State<Registration> {
                           BorderSide(color: SecondaryColor.withOpacity(0.8)))),
             ),
             TextField(
+              obscureText: true,
               controller: contPassword,
               style: TextStyle(color: SecondaryColor),
               inputFormatters: [
@@ -56,6 +72,7 @@ class _RegistrationState extends State<Registration> {
                           BorderSide(color: SecondaryColor.withOpacity(0.5)))),
             ),
             TextField(
+              obscureText: true,
               controller: contRePassword,
               style: TextStyle(color: SecondaryColor),
               inputFormatters: [
@@ -87,9 +104,6 @@ class _RegistrationState extends State<Registration> {
                       SystemChrome.setEnabledSystemUIOverlays(
                           [SystemUiOverlay.bottom]);
                       addUser();
-                      Navigator.of(context).push(PageRouteTransition(
-                          builder: (context) => Login(),
-                          animationType: AnimationType.fade));
                     }),
               ),
             ),
