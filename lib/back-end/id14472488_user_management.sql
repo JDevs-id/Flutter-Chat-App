@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 27, 2020 at 02:27 AM
+-- Generation Time: Jul 27, 2020 at 03:57 AM
 -- Server version: 10.3.16-MariaDB
 -- PHP Version: 7.3.12
 
@@ -30,16 +30,17 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `tb_user` (
   `username` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(20) COLLATE utf8_unicode_ci NOT NULL
+  `password` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `status` varchar(6) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `tb_user`
 --
 
-INSERT INTO `tb_user` (`username`, `password`) VALUES
-('jaya', 'qwerty'),
-('tri', '12345678');
+INSERT INTO `tb_user` (`username`, `password`, `status`) VALUES
+('jaya', 'qwerty', 'logout'),
+('tri', '12345678', 'logout');
 
 --
 -- Indexes for dumped tables

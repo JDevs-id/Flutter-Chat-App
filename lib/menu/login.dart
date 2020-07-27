@@ -18,6 +18,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController contUser = TextEditingController();
   TextEditingController contPass = TextEditingController();
+  DateTime loginTime = DateTime.now();
 
   void initState() {
     super.initState();
@@ -42,10 +43,14 @@ class _LoginState extends State<Login> {
       });
     } else {
       msg = "";
+      http.post("$BASE_URL/editStatus.php", body: {
+        "username": contUser.text,
+        "status": "login",
+      });
       Navigator.of(context).pushReplacement(PageRouteTransition(
-          builder: (context) => Home(
-                user: dataUser[0]['username'],
-              )));
+          builder: (context) =>
+              Home(user: dataUser[0]['username'], loginTime: loginTime)));
+      print(loginTime);
     }
 
     return dataUser;

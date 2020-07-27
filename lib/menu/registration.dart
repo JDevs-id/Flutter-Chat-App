@@ -22,6 +22,7 @@ class _RegistrationState extends State<Registration> {
         "username": contUsername.text,
         "password": contPassword.text,
         "repassword": contRePassword.text,
+        "status": "logout",
       });
       contUsername.text = "";
       contPassword.text = "";

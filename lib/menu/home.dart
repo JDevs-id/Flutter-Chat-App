@@ -1,11 +1,14 @@
 import 'package:UserManagement/global/color.dart';
+import 'package:UserManagement/global/url.dart';
 import 'package:UserManagement/menu/login.dart';
 import 'package:flutter/material.dart';
 import 'package:route_transitions/route_transitions.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
-  Home({this.user});
+  Home({this.user, this.loginTime});
   final String user;
+  final loginTime;
 
   @override
   _HomeState createState() => _HomeState();
@@ -37,7 +40,7 @@ class _HomeState extends State<Home> {
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: Text(
-                        "${widget.user}",
+                        "${widget.loginTime}",
                         style: TextStyle(
                             color: SecondaryColor, fontWeight: FontWeight.bold),
                       ),
@@ -60,6 +63,10 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                       onTap: () {
+                        http.post("$BASE_URL/editStatus.php", body: {
+                          "username": widget.user,
+                          "status": "logout",
+                        });
                         Navigator.of(context).pushReplacement(
                             PageRouteTransition(builder: (context) => Login()));
                       },
