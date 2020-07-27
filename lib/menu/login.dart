@@ -4,6 +4,7 @@ import 'package:UserManagement/global/behavior.dart';
 import 'package:UserManagement/global/color.dart';
 import 'package:UserManagement/global/url.dart';
 import 'package:UserManagement/menu/home.dart';
+import 'package:UserManagement/menu/registration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -41,8 +42,8 @@ class _LoginState extends State<Login> {
       });
     } else {
       msg = "";
-      Navigator.of(context).pushReplacement(PageRouteTransition(
-          builder: (context) => Home()));
+      Navigator.of(context)
+          .pushReplacement(PageRouteTransition(builder: (context) => Home()));
     }
 
     return dataUser;
@@ -63,8 +64,8 @@ class _LoginState extends State<Login> {
         child: Stack(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: InkWell(
+              padding: const EdgeInsets.all(10.0),
+              child: GestureDetector(
                 child: Row(
                   children: <Widget>[
                     Icon(
@@ -78,7 +79,11 @@ class _LoginState extends State<Login> {
                     )
                   ],
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(PageRouteTransition(
+                      builder: (context) => Registration(),
+                      animationType: AnimationType.fade));
+                },
               ),
             ),
             Align(
