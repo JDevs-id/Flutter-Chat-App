@@ -42,8 +42,10 @@ class _LoginState extends State<Login> {
       });
     } else {
       msg = "";
-      Navigator.of(context)
-          .pushReplacement(PageRouteTransition(builder: (context) => Home()));
+      Navigator.of(context).pushReplacement(PageRouteTransition(
+          builder: (context) => Home(
+                user: dataUser[0]['username'],
+              )));
     }
 
     return dataUser;
