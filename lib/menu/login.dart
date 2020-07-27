@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:UserManagement/global/behavior.dart';
 import 'package:UserManagement/global/color.dart';
+import 'package:UserManagement/global/url.dart';
+import 'package:UserManagement/menu/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:route_transitions/route_transitions.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -21,7 +27,26 @@ class _LoginState extends State<Login> {
   }
 
   String msg = "";
-  loginAuth() {}
+
+  Future<List> loginAuth() async {
+    final response = await http.post("$BASE_URL/loginAuth.php", body: {
+      "username": contUser.text,
+      "password": contPass.text,
+    });
+
+    var dataUser = json.decode(response.body);
+    if (dataUser.length == 0) {
+      setState(() {
+        msg = "Login Failed!\nCheck your username and password!";
+      });
+    } else {
+      msg = "";
+      Navigator.of(context).pushReplacement(PageRouteTransition(
+          builder: (context) => Home(user: dataUser[0]['username'])));
+    }
+
+    return dataUser;
+  }
 
   bool showPass = true;
   void togglePassword() {
