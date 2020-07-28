@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   Home({this.user, this.loginTime});
-  final String user;
+  final List user;
   final loginTime;
 
   @override
@@ -18,66 +18,68 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: PrimaryColor,
-      body: Stack(
-        children: <Widget>[
-          Center(
-              child: Text(
-            "Welcome ${widget.user}",
-            style:
-                TextStyle(color: SecondaryColor, fontWeight: FontWeight.bold),
-          )),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              color: ThirdColor.withOpacity(0.3),
-              height: MediaQuery.of(context).size.height * 0.03,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        "${widget.loginTime}",
-                        style: TextStyle(
-                            color: SecondaryColor, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    GestureDetector(
+            backgroundColor: PrimaryColor,
+            body: Stack(
+              children: <Widget>[
+                Center(
+                    child: Text(
+                  "Welcome ${widget.user[0]['username']}",
+                  style: TextStyle(
+                      color: SecondaryColor, fontWeight: FontWeight.bold),
+                )),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    color: ThirdColor.withOpacity(0.3),
+                    height: MediaQuery.of(context).size.height * 0.03,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Icon(
-                            Icons.exit_to_app,
-                            color: SecondaryColor,
-                          ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 8),
+                            padding: const EdgeInsets.only(left: 10),
                             child: Text(
-                              "Log Out",
-                              style: TextStyle(color: SecondaryColor),
+                              "${widget.loginTime}",
+                              style: TextStyle(
+                                  color: SecondaryColor,
+                                  fontWeight: FontWeight.bold),
                             ),
+                          ),
+                          GestureDetector(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.exit_to_app,
+                                  color: SecondaryColor,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8),
+                                  child: Text(
+                                    "Log Out",
+                                    style: TextStyle(color: SecondaryColor),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              http.post("$BASE_URL/editStatus.php", body: {
+                                "username": widget.user[0]['username'],
+                                "status": "logout",
+                              });
+                              Navigator.of(context).pushReplacement(
+                                  PageRouteTransition(
+                                      builder: (context) => Login()));
+                            },
                           ),
                         ],
                       ),
-                      onTap: () {
-                        http.post("$BASE_URL/editStatus.php", body: {
-                          "username": widget.user,
-                          "status": "logout",
-                        });
-                        Navigator.of(context).pushReplacement(
-                            PageRouteTransition(builder: (context) => Login()));
-                      },
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                )
+              ],
             ),
-          )
-        ],
-      ),
-    );
+          );
   }
 }
