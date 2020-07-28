@@ -1,1 +1,1 @@
-const BASE_URL = "http://usermanagementmkm.000webhostapp.com/back-end";
+const BASE_URL = "http://192.168.42.123/usermanagement/back-end";

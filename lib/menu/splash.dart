@@ -21,8 +21,8 @@ class _SplashState extends State<Splash> {
     ));
     Timer(
         Duration(seconds: 3),
-        () => Navigator.of(context).pushReplacement(PageRouteTransition(
-            builder: (context) => Login(), animationType: AnimationType.fade)));
+        () => Navigator.of(context).push(PageRouteTransition(
+            animationType: AnimationType.fade, builder: (context) => Login())));
   }
 
   @override
