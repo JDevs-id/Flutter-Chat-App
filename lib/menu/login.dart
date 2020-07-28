@@ -156,6 +156,14 @@ class _LoginState extends State<Login> {
                                           controller: contPass,
                                           style: TextStyle(color: PrimaryColor),
                                           decoration: InputDecoration(
+                                              suffixIcon: IconButton(
+                                                icon: Icon(showPass == true
+                                                    ? Icons.visibility
+                                                    : Icons.visibility_off),
+                                                onPressed: () {
+                                                  togglePassword();
+                                                },
+                                              ),
                                               labelText: "Password",
                                               labelStyle: TextStyle(
                                                   color: PrimaryColor),
@@ -170,21 +178,6 @@ class _LoginState extends State<Login> {
                                                           color: PrimaryColor
                                                               .withOpacity(
                                                                   0.4)))),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 35, right: 10),
-                                          child: Align(
-                                            alignment: Alignment.bottomRight,
-                                            child: InkWell(
-                                              child: Icon(showPass == true
-                                                  ? Icons.visibility
-                                                  : Icons.visibility_off),
-                                              onTap: () {
-                                                togglePassword();
-                                              },
-                                            ),
-                                          ),
                                         ),
                                       ],
                                     ),
