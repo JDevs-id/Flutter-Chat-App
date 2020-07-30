@@ -23,9 +23,8 @@ class _LoginState extends State<Login> {
   TextEditingController contUser = TextEditingController();
   TextEditingController contPass = TextEditingController();
   DateTime dateTimeNow = DateTime.now();
-  
-
-  String msg = "";
+  SharedPreferences pref;
+  List dataUser = [];
 
   var status;
   void getPref() async {
@@ -44,18 +43,6 @@ class _LoginState extends State<Login> {
     getPref();
   }
 
-  void savePrefs(String status, String username, String password) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    setState(() {
-      pref.setString("status", "login");
-      pref.setString("username", contUser.text);
-      pref.setString("password", contPass.text);
-      print(pref.getString("status"));
-      print(pref.getString("username"));
-      print(pref.getString("password"));
-    });
-  }
-
   void signOut() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
@@ -70,36 +57,132 @@ class _LoginState extends State<Login> {
       "password": contPass.text,
     });
 
-    var dataUser = json.decode(response.body);
+    dataUser = json.decode(response.body);
+
+    void savePrefs(int index, int id, String user, String pass, String stat,
+        int sess) async {
+      pref = await SharedPreferences.getInstance();
+      setState(() {
+        pref.setInt("index", index);
+        pref.setInt("id", id);
+        pref.setString("username", user);
+        pref.setString("password", pass);
+        pref.setString("status", stat);
+        pref.setInt("sessions", sess);
+        print("Pref index: ${pref.getInt("id")}");
+        print("Pref id: ${pref.getInt("id")}");
+        print("Pref username: ${pref.getString("username")}");
+        print("Pref password: ${pref.getString("password")}");
+        print("Pref status: ${pref.getString("status")}");
+        print("Pref sessions: ${pref.getInt("sessions")}");
+      });
+    }
 
     if (dataUser.length == 0) {
       setState(() {
-        msg = "Login Failed!\nCheck your username and password!";
+        showToastAlert("Login Failed! Check your username and password!");
       });
     } else {
       if (dataUser[0]['status'] == "login") {
-        showToastAlert("This account is still used in other device!");
-        http.post("$BASE_URL/editStatus.php", body: {
-          "username": contUser.text,
-          "status": "logout",
-        });
+        AlertDialog alert = AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          title: Text("Login Alert!",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: FourthColor)),
+          content: ScrollConfiguration(
+            behavior: NoScrollGrow(),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: ListView(
+                shrinkWrap: true,
+                children: <Widget>[
+                  Text(
+                    "Are you sure you want to log in to this device? Your account is still signed in on another device!",
+                    textAlign: TextAlign.justify,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Text(
+                      "Note: Your account on other devices will automatically sign out if you choose to sign in to this device",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(fontSize: 8, color: FourthColor),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            RaisedButton(
+              child: Text(
+                "Yes",
+                style: TextStyle(color: SecondaryColor),
+              ),
+              color: FourthColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+              onPressed: () {
+                FocusScope.of(context).unfocus();
+                Navigator.pop(context);
+                loginStatus = LoginStatus.signIn;
+                savePrefs(
+                    int.parse(dataUser[0]['id']) - 1,
+                    int.parse(dataUser[0]['id']),
+                    contUser.text,
+                    contPass.text,
+                    "login",
+                    int.parse(dataUser[0]['sessions']) + 1);
+                http.post("$BASE_URL/editStatus.php", body: {
+                  "username": contUser.text,
+                  "status": "login",
+                  "sessions":
+                      (int.parse(dataUser[0]['sessions']) + 1).toString()
+                });
+                Navigator.of(context).pushReplacement(PageRouteTransition(
+                    builder: (context) =>
+                        Home(dateTimeNow: dateTimeNow, signOut: signOut)));
+              },
+            ),
+            RaisedButton(
+              child: Text(
+                "No",
+                style: TextStyle(color: SecondaryColor),
+              ),
+              color: PrimaryColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+
+        showDialog(
+          context: context,
+          child: alert,
+          barrierDismissible: false,
+        );
       } else if (dataUser[0]['status'] == "logout") {
-        msg = "";
+        loginStatus = LoginStatus.signIn;
+        savePrefs(
+            (int.parse(dataUser[0]['id']) - 1),
+            (int.parse(dataUser[0]['id'])),
+            contUser.text,
+            contPass.text,
+            "login",
+            (int.parse(dataUser[0]['sessions'])) + 1);
         http.post("$BASE_URL/editStatus.php", body: {
           "username": contUser.text,
           "status": "login",
+          "sessions": (int.parse(dataUser[0]['sessions']) + 1).toString()
         });
-        loginStatus = LoginStatus.signIn;
-        savePrefs("login", contUser.text, contPass.text);
         Navigator.of(context).pushReplacement(PageRouteTransition(
-            builder: (context) => Home(
-                  dateTimeNow: dateTimeNow,
-                  signOut: signOut,
-                )));
+            builder: (context) =>
+                Home(dateTimeNow: dateTimeNow, signOut: signOut)));
       }
     }
-
-    return dataUser;
   }
 
   bool showPass = true;
@@ -118,7 +201,7 @@ class _LoginState extends State<Login> {
           body: Stack(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.only(top: 30, left: 20),
                 child: GestureDetector(
                   child: Row(
                     children: <Widget>[
@@ -168,6 +251,9 @@ class _LoginState extends State<Login> {
                           children: <Widget>[
                             TextField(
                               controller: contUser,
+                              textInputAction: TextInputAction.next,
+                              onSubmitted: (_) =>
+                                  FocusScope.of(context).nextFocus(),
                               style: TextStyle(color: PrimaryColor),
                               decoration: InputDecoration(
                                   labelText: "Username",
@@ -180,37 +266,39 @@ class _LoginState extends State<Login> {
                                           color:
                                               PrimaryColor.withOpacity(0.5)))),
                             ),
-                            Stack(
-                              children: <Widget>[
-                                TextField(
-                                  obscureText: showPass,
-                                  controller: contPass,
-                                  style: TextStyle(color: PrimaryColor),
-                                  decoration: InputDecoration(
-                                      suffixIcon: IconButton(
-                                        icon: Icon(showPass == true
-                                            ? Icons.visibility
-                                            : Icons.visibility_off),
-                                        onPressed: () {
-                                          togglePassword();
-                                        },
-                                      ),
-                                      labelText: "Password",
-                                      labelStyle:
-                                          TextStyle(color: PrimaryColor),
-                                      hintText: "Input your password",
-                                      hintStyle: TextStyle(
-                                          color: PrimaryColor.withOpacity(0.5)),
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: PrimaryColor.withOpacity(
-                                                  0.4)))),
-                                ),
-                              ],
+                            TextField(
+                              obscureText: showPass,
+                              controller: contPass,
+                              textInputAction: TextInputAction.go,
+                              onSubmitted: (_) {
+                                SystemChrome.setEnabledSystemUIOverlays(
+                                    [SystemUiOverlay.bottom]);
+                                FocusScope.of(context).unfocus();
+                                loginAuth();
+                              },
+                              style: TextStyle(color: PrimaryColor),
+                              decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    icon: Icon(showPass == true
+                                        ? Icons.visibility
+                                        : Icons.visibility_off),
+                                    onPressed: () {
+                                      togglePassword();
+                                    },
+                                  ),
+                                  labelText: "Password",
+                                  labelStyle: TextStyle(color: PrimaryColor),
+                                  hintText: "Input your password",
+                                  hintStyle: TextStyle(
+                                      color: PrimaryColor.withOpacity(0.5)),
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color:
+                                              PrimaryColor.withOpacity(0.4)))),
                             ),
                             Center(
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 20),
+                                padding: const EdgeInsets.only(top: 20, bottom: 20),
                                 child: FlatButton(
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
@@ -225,20 +313,9 @@ class _LoginState extends State<Login> {
                                     onPressed: () {
                                       SystemChrome.setEnabledSystemUIOverlays(
                                           [SystemUiOverlay.bottom]);
+                                      FocusScope.of(context).unfocus();
                                       loginAuth();
                                     }),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                msg,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: FourthColor.withOpacity(0.8),
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.03),
                               ),
                             ),
                           ],
@@ -253,10 +330,7 @@ class _LoginState extends State<Login> {
         );
         break;
       case LoginStatus.signIn:
-        return Home(
-          dateTimeNow: dateTimeNow,
-          signOut: signOut,
-        );
+        return Home(dateTimeNow: dateTimeNow, signOut: signOut);
         break;
       default:
         return Scaffold(

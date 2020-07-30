@@ -1,5 +1,5 @@
 <?php
-$conn=new mysqli("localhost","id14472488_root","--Kosong00--","id14472488_user_management");
+$conn=new mysqli("localhost","id14472488_admin","--Kosong00--","id14472488_db_um");
 
 if($conn){
 }else{

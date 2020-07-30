@@ -1,10 +1,10 @@
 <?php
-include "conn.php";
+include 'conn.php';
 
 $username = $_POST['username'];
 $password = $_POST['password'];
 
-$queryResult = $conn->query("SELECT * FROM `tb_user` WHERE `username`='$username' AND `password`='$password'");
+$queryResult = $conn->query("SELECT * FROM `tb_users` WHERE `username`='$username' AND `password`='$password'");
 
 $result = array();
 

@@ -21,7 +21,7 @@ class _SplashState extends State<Splash> {
     ));
     Timer(
         Duration(seconds: 3),
-        () => Navigator.of(context).push(PageRouteTransition(
+        () => Navigator.of(context).pushReplacement(PageRouteTransition(
             animationType: AnimationType.fade, builder: (context) => Login())));
   }
 
@@ -29,46 +29,17 @@ class _SplashState extends State<Splash> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: PrimaryColor,
-      body: Stack(
-        children: <Widget>[
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 40),
-              child: Text(
-                "Welcome",
-                style: TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: MediaQuery.of(context).size.width * 0.1,
-                    color: SecondaryColor),
-              ),
-            ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 40),
+          child: Text(
+            "Welcome",
+            style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: MediaQuery.of(context).size.width * 0.1,
+                color: SecondaryColor),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 1,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    "Loading Data ...",
-                    style: TextStyle(color: SecondaryColor),
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
+        ),
       ),
     );
   }
