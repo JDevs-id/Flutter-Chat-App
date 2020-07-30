@@ -121,7 +121,19 @@ class _RegistrationState extends State<Registration> {
                           onSubmitted: (_) {
                             SystemChrome.setEnabledSystemUIOverlays(
                                 [SystemUiOverlay.bottom]);
-                            addUser();
+                            var data = [];
+                            for (int i = 0;
+                                i <
+                                    int.parse(snapshot
+                                        .data[snapshot.data.length - 1]['id']);
+                                i++) {
+                              data.addAll({snapshot.data[i]['username']});
+                            }
+                            if (data.contains(contUsername.text) == true) {
+                              showToastAlert("Username is already taken!");
+                            } else {
+                              addUser();
+                            }
                           },
                           style: TextStyle(color: SecondaryColor),
                           inputFormatters: [
@@ -154,7 +166,21 @@ class _RegistrationState extends State<Registration> {
                                 onPressed: () {
                                   SystemChrome.setEnabledSystemUIOverlays(
                                       [SystemUiOverlay.bottom]);
-                                  addUser();
+                                  var data = [];
+                                  for (int i = 0;
+                                      i <
+                                          int.parse(snapshot.data[
+                                              snapshot.data.length - 1]['id']);
+                                      i++) {
+                                    data.addAll({snapshot.data[i]['username']});
+                                  }
+                                  if (data.contains(contUsername.text) ==
+                                      true) {
+                                    showToastAlert(
+                                        "Username is already taken!");
+                                  } else {
+                                    addUser();
+                                  }
                                 }),
                           ),
                         ),
