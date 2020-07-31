@@ -122,11 +122,7 @@ class _RegistrationState extends State<Registration> {
                             SystemChrome.setEnabledSystemUIOverlays(
                                 [SystemUiOverlay.bottom]);
                             var data = [];
-                            for (int i = 0;
-                                i <
-                                    int.parse(snapshot
-                                        .data[snapshot.data.length - 1]['id']);
-                                i++) {
+                            for (int i = 0; i < snapshot.data.length; i++) {
                               data.addAll({snapshot.data[i]['username']});
                             }
                             if (data.contains(contUsername.text) == true) {
@@ -168,9 +164,7 @@ class _RegistrationState extends State<Registration> {
                                       [SystemUiOverlay.bottom]);
                                   var data = [];
                                   for (int i = 0;
-                                      i <
-                                          int.parse(snapshot.data[
-                                              snapshot.data.length - 1]['id']);
+                                      i < snapshot.data.length;
                                       i++) {
                                     data.addAll({snapshot.data[i]['username']});
                                   }
