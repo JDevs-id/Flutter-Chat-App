@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:UserManagement/global/color.dart';
-import 'package:UserManagement/menu/login.dart';
+import 'package:user_management/global/color.dart';
+import 'package:user_management/menu/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:route_transitions/route_transitions.dart';

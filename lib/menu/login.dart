@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:UserManagement/global/behavior.dart';
-import 'package:UserManagement/global/color.dart';
-import 'package:UserManagement/global/url.dart';
-import 'package:UserManagement/menu/home.dart';
-import 'package:UserManagement/menu/registration.dart';
+import 'package:user_management/global/behavior.dart';
+import 'package:user_management/global/color.dart';
+import 'package:user_management/global/url.dart';
+import 'package:user_management/menu/home.dart';
+import 'package:user_management/menu/registration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -45,10 +45,8 @@ class _LoginState extends State<Login> {
 
   void signOut() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    setState(() {
-      preferences.clear();
-      loginStatus = LoginStatus.notSignIn;
-    });
+    preferences.clear();
+    loginStatus = LoginStatus.notSignIn;
   }
 
   void loginAuth() async {
@@ -60,7 +58,7 @@ class _LoginState extends State<Login> {
     dataUser = json.decode(response.body);
 
     void savePrefs(int index, int id, String user, String pass, String stat,
-        int sess) async {
+        int sess, String accStat) async {
       pref = await SharedPreferences.getInstance();
       setState(() {
         pref.setInt("index", index);
@@ -69,12 +67,14 @@ class _LoginState extends State<Login> {
         pref.setString("password", pass);
         pref.setString("status", stat);
         pref.setInt("sessions", sess);
+        pref.setString("account_status", stat);
         print("Pref index: ${pref.getInt("id")}");
         print("Pref id: ${pref.getInt("id")}");
         print("Pref username: ${pref.getString("username")}");
         print("Pref password: ${pref.getString("password")}");
         print("Pref status: ${pref.getString("status")}");
         print("Pref sessions: ${pref.getInt("sessions")}");
+        print("Pref account_status: ${pref.getString("account_status")}");
       });
     }
 
@@ -132,7 +132,8 @@ class _LoginState extends State<Login> {
                     contUser.text,
                     contPass.text,
                     "login",
-                    int.parse(dataUser[0]['sessions']) + 1);
+                    int.parse(dataUser[0]['sessions']) + 1,
+                    "enable");
                 http.post("$BASE_URL/editStatus.php", body: {
                   "username": contUser.text,
                   "status": "login",
@@ -164,7 +165,60 @@ class _LoginState extends State<Login> {
           child: alert,
           barrierDismissible: false,
         );
-      } else if (dataUser[0]['status'] == "logout") {
+      }
+      if (dataUser[0]['account_status'] == "disable") {
+        AlertDialog alert = AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          title: Text("Login Alert!",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: FourthColor)),
+          content: ScrollConfiguration(
+            behavior: NoScrollGrow(),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: ListView(
+                shrinkWrap: true,
+                children: <Widget>[
+                  Text(
+                    "Your account is disabled!",
+                    textAlign: TextAlign.justify,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Text(
+                      "Contact administrator to enable your account or create some new account!",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(fontSize: 8, color: FourthColor),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            RaisedButton(
+              child: Text(
+                "OK",
+                style: TextStyle(color: SecondaryColor),
+              ),
+              color: PrimaryColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+
+        showDialog(
+          context: context,
+          child: alert,
+          barrierDismissible: false,
+        );
+      } else if (dataUser[0]['status'] == "logout" &&
+          dataUser[0]['account_status'] == "enable") {
         loginStatus = LoginStatus.signIn;
         savePrefs(
             (int.parse(dataUser[0]['id']) - 1),
@@ -172,7 +226,8 @@ class _LoginState extends State<Login> {
             contUser.text,
             contPass.text,
             "login",
-            (int.parse(dataUser[0]['sessions'])) + 1);
+            (int.parse(dataUser[0]['sessions'])) + 1,
+            "enable");
         http.post("$BASE_URL/editStatus.php", body: {
           "username": contUser.text,
           "status": "login",
@@ -298,7 +353,8 @@ class _LoginState extends State<Login> {
                             ),
                             Center(
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 20, bottom: 20),
+                                padding:
+                                    const EdgeInsets.only(top: 20, bottom: 20),
                                 child: FlatButton(
                                     shape: RoundedRectangleBorder(
                                         borderRadius:

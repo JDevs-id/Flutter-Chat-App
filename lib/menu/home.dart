@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:UserManagement/global/color.dart';
-import 'package:UserManagement/global/url.dart';
-import 'package:UserManagement/menu/login.dart';
+import 'package:user_management/global/color.dart';
+import 'package:user_management/global/url.dart';
+import 'package:user_management/menu/login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:route_transitions/route_transitions.dart';

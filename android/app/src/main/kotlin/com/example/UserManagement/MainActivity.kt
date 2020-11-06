@@ -1,4 +1,4 @@
-package com.example.UserManagement
+package com.example.user_management
 
 import io.flutter.embedding.android.FlutterActivity
 

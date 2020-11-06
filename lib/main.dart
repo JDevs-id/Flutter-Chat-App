@@ -1,4 +1,4 @@
-import 'package:UserManagement/menu/splash.dart';
+import 'package:user_management/menu/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

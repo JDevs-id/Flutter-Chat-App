@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:UserManagement/global/behavior.dart';
-import 'package:UserManagement/global/color.dart';
-import 'package:UserManagement/global/url.dart';
+import 'package:user_management/global/behavior.dart';
+import 'package:user_management/global/color.dart';
+import 'package:user_management/global/url.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -16,8 +16,6 @@ class _RegistrationState extends State<Registration> {
   TextEditingController contUsername = TextEditingController();
   TextEditingController contPassword = TextEditingController();
   TextEditingController contRePassword = TextEditingController();
-  String status = "logout";
-  String sessions = "0";
 
   Future getUser() async {
     final response = await http.get("$BASE_URL/getUsers.php");
@@ -32,8 +30,6 @@ class _RegistrationState extends State<Registration> {
       http.post(url, body: {
         "username": contUsername.text,
         "password": contPassword.text,
-        "status": status,
-        "sessions": sessions,
       });
       contUsername.text = "";
       contPassword.text = "";
