@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:route_transitions/route_transitions.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:user_management/menu/messaging/message.dart';
 
 class Home extends StatefulWidget {
   Home({this.signOut, this.dateTimeNow});
@@ -62,6 +63,17 @@ class _HomeState extends State<Home> {
           return int.parse(snapshot.data[index]['sessions']) == sessions
               ? Scaffold(
                   backgroundColor: PrimaryColor,
+                  floatingActionButton: Padding(
+                    padding: const EdgeInsets.only(bottom: 40),
+                    child: FloatingActionButton(
+                        backgroundColor: SecondaryColor,
+                        child: Icon(Icons.message, color: PrimaryColor),
+                        onPressed: () => Navigator.of(context).push(
+                              PageRouteTransition(
+                                  builder: (context) => Message(),
+                                  animationType: AnimationType.fade),
+                            )),
+                  ),
                   body: Stack(
                     children: <Widget>[
                       Center(
