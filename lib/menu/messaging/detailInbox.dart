@@ -34,14 +34,13 @@ class _DetailInboxState extends State<DetailInbox> {
             behavior: NoScrollGrow(),
             child: ListView(
               padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.055,
-                  bottom: MediaQuery.of(context).size.height * 0.055),
+                  top: MediaQuery.of(context).size.height * 0.07, bottom: 90),
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 60, bottom: 10),
                   child: Container(
                     decoration: BoxDecoration(
-                        color: SecondaryColor.withOpacity(0.9),
+                        color: SecondaryColor.withOpacity(0.75),
                         borderRadius: BorderRadius.only(
                           bottomRight: Radius.circular(20),
                         )),
@@ -59,7 +58,7 @@ class _DetailInboxState extends State<DetailInbox> {
                   padding: const EdgeInsets.only(left: 60, bottom: 10),
                   child: Container(
                     decoration: BoxDecoration(
-                        color: SecondaryColor.withOpacity(0.9),
+                        color: SecondaryColor.withOpacity(0.05),
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(20),
                         )),
@@ -67,7 +66,7 @@ class _DetailInboxState extends State<DetailInbox> {
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-                        style: TextStyle(color: PrimaryColor),
+                        style: TextStyle(color: SecondaryColor),
                         textAlign: TextAlign.justify,
                       ),
                     ),
@@ -90,24 +89,33 @@ class _DetailInboxState extends State<DetailInbox> {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                textInputAction: TextInputAction.go,
-                onSubmitted: (_) => _send(),
-                maxLines: null,
-                style: TextStyle(color: SecondaryColor),
-                decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.send, color: SecondaryColor),
-                      onPressed: () => _send(),
-                    ),
-                    labelText: "Replay message",
-                    labelStyle: TextStyle(color: SecondaryColor),
-                    hintText: "Input your message",
-                    hintStyle:
-                        TextStyle(color: SecondaryColor.withOpacity(0.5)),
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: SecondaryColor.withOpacity(0.8)))),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: SecondaryColor.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    textInputAction: TextInputAction.go,
+                    onSubmitted: (_) {
+                      _send();
+                    },
+                    maxLines: null,
+                    style: TextStyle(color: PrimaryColor),
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.send, color: PrimaryColor),
+                          onPressed: () {
+                            _send();
+                          },
+                        ),
+                        hintText: "Replay message",
+                        hintStyle:
+                            TextStyle(color: PrimaryColor.withOpacity(0.5)),
+                        border: InputBorder.none),
+                  ),
+                ),
               ),
             ),
           ),
