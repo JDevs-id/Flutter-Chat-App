@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:route_transitions/route_transitions.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:user_management/menu/messaging/inbox.dart';
 import 'package:user_management/menu/messaging/message.dart';
 
 class Home extends StatefulWidget {
@@ -55,7 +56,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     String formattedDate =
         DateFormat('HH:mm dd/MM/yyyy').format(widget.dateTimeNow);
-    print("getPrefs :$index, $id, $username, $password, $status, $sessions");
+    //print("getPrefs :$index, $id, $username, $password, $status, $sessions");
     return FutureBuilder<List>(
       future: getUser(),
       builder: (context, snapshot) {
@@ -76,12 +77,46 @@ class _HomeState extends State<Home> {
                   ),
                   body: Stack(
                     children: <Widget>[
-                      Center(
-                          child: Text(
-                        "Welcome $username",
-                        style: TextStyle(
-                            color: SecondaryColor, fontWeight: FontWeight.bold),
-                      )),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Welcome $username",
+                            style: TextStyle(
+                                color: SecondaryColor,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FlatButton(
+                              color: SecondaryColor,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.notifications,
+                                        color: PrimaryColor),
+                                    Padding(
+                                        padding: const EdgeInsets.only(left: 2),
+                                        child: Text("INBOX",
+                                            style: TextStyle(
+                                                color: PrimaryColor,
+                                                fontWeight: FontWeight.bold))),
+                                  ],
+                                ),
+                              ),
+                              onPressed: () => Navigator.of(context).push(
+                                PageRouteTransition(
+                                    builder: (context) => Inbox(),
+                                    animationType: AnimationType.fade),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Container(

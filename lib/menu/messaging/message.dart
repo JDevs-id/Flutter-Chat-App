@@ -15,6 +15,7 @@ class _MessageState extends State<Message> {
     void _send() {
       SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
       FocusScope.of(context).unfocus();
+      Navigator.of(context).pop();
     }
 
     return Scaffold(
