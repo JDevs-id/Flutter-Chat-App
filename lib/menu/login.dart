@@ -57,24 +57,15 @@ class _LoginState extends State<Login> {
 
     dataUser = json.decode(response.body);
 
-    void savePrefs(int index, int id, String user, String pass, String stat,
-        int sess, String accStat) async {
+    void savePrefs(
+        String user, String pass, String stat, int sess, String accStat) async {
       pref = await SharedPreferences.getInstance();
       setState(() {
-        pref.setInt("index", index);
-        pref.setInt("id", id);
         pref.setString("username", user);
         pref.setString("password", pass);
         pref.setString("status", stat);
         pref.setInt("sessions", sess);
         pref.setString("account_status", stat);
-        print("Pref index: ${pref.getInt("id")}");
-        print("Pref id: ${pref.getInt("id")}");
-        print("Pref username: ${pref.getString("username")}");
-        print("Pref password: ${pref.getString("password")}");
-        print("Pref status: ${pref.getString("status")}");
-        print("Pref sessions: ${pref.getInt("sessions")}");
-        print("Pref account_status: ${pref.getString("account_status")}");
       });
     }
 
@@ -84,7 +75,7 @@ class _LoginState extends State<Login> {
       });
     } else {
       if (dataUser[0]['status'] == "login") {
-        AlertDialog alert = AlertDialog(
+        AlertDialog _loginAlert = AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           title: Text("Login Alert!",
@@ -126,14 +117,8 @@ class _LoginState extends State<Login> {
                 FocusScope.of(context).unfocus();
                 Navigator.pop(context);
                 loginStatus = LoginStatus.signIn;
-                savePrefs(
-                    int.parse(dataUser[0]['id']) - 1,
-                    int.parse(dataUser[0]['id']),
-                    contUser.text,
-                    contPass.text,
-                    "login",
-                    int.parse(dataUser[0]['sessions']) + 1,
-                    "enable");
+                savePrefs(contUser.text, contPass.text, "login",
+                    int.parse(dataUser[0]['sessions']) + 1, "enable");
                 http.post("$BASE_URL/editStatus.php", body: {
                   "username": contUser.text,
                   "status": "login",
@@ -162,12 +147,12 @@ class _LoginState extends State<Login> {
 
         showDialog(
           context: context,
-          child: alert,
+          builder: (context) => _loginAlert,
           barrierDismissible: false,
         );
       }
       if (dataUser[0]['account_status'] == "disable") {
-        AlertDialog alert = AlertDialog(
+        AlertDialog _statusAlert = AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           title: Text("Login Alert!",
@@ -214,20 +199,14 @@ class _LoginState extends State<Login> {
 
         showDialog(
           context: context,
-          child: alert,
+          builder: (context) => _statusAlert,
           barrierDismissible: false,
         );
       } else if (dataUser[0]['status'] == "logout" &&
           dataUser[0]['account_status'] == "enable") {
         loginStatus = LoginStatus.signIn;
-        savePrefs(
-            (int.parse(dataUser[0]['id']) - 1),
-            (int.parse(dataUser[0]['id'])),
-            contUser.text,
-            contPass.text,
-            "login",
-            (int.parse(dataUser[0]['sessions'])) + 1,
-            "enable");
+        savePrefs(contUser.text, contPass.text, "login",
+            (int.parse(dataUser[0]['sessions'])) + 1, "enable");
         http.post("$BASE_URL/editStatus.php", body: {
           "username": contUser.text,
           "status": "login",

@@ -22,15 +22,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var status, username, password, index, id, sessions;
+  var status, username, password, sessions;
   void getPref() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       status = pref.getString("status");
       username = pref.getString('username');
       password = pref.getString('password');
-      index = pref.getInt('index');
-      id = pref.getInt('id');
       sessions = pref.getInt('sessions');
     });
   }
@@ -42,7 +40,8 @@ class _HomeState extends State<Home> {
   }
 
   Future<List> getUser() async {
-    final response = await http.get("$BASE_URL/getUsers.php");
+    final response =
+        await http.get("$BASE_URL/getLoginUser.php?username=$username");
     return json.decode(response.body);
   }
 
@@ -61,7 +60,7 @@ class _HomeState extends State<Home> {
       future: getUser(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return int.parse(snapshot.data[index]['sessions']) == sessions
+          return int.parse(snapshot.data[0]['sessions']) == sessions
               ? Scaffold(
                   backgroundColor: PrimaryColor,
                   floatingActionButton: Padding(
@@ -168,7 +167,7 @@ class _HomeState extends State<Home> {
                                         });
                                     signOut();
                                     print(
-                                        "getPrefs SignOut :$index, $id, $username, $password, $status, $sessions");
+                                        "getPrefs SignOut :$username, $password, $status, $sessions");
                                     Navigator.of(context).pushReplacement(
                                         PageRouteTransition(
                                             builder: (context) => Login()));

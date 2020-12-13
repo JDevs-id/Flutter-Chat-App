@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 06, 2020 at 03:42 AM
+-- Generation Time: Dec 13, 2020 at 10:40 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -24,6 +24,27 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `log_message`
+--
+
+CREATE TABLE `log_message` (
+  `time` datetime NOT NULL,
+  `message_id` varchar(50) NOT NULL,
+  `message` text NOT NULL,
+  `status` enum('unreaded','readed') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `log_message`
+--
+
+INSERT INTO `log_message` (`time`, `message_id`, `message`, `status`) VALUES
+('2020-12-13 16:37:56', 'jayatotri', 'Hello tri', 'readed'),
+('2020-12-13 16:38:34', 'tritojaya', 'Hi, what\'s up bro?', 'unreaded');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tb_admin`
 --
 
@@ -40,7 +61,27 @@ CREATE TABLE `tb_admin` (
 --
 
 INSERT INTO `tb_admin` (`id`, `username`, `password`, `sessions`, `reset_code`) VALUES
-(1, 'admin', 'admin', 1, 'reset');
+(1, 'admin', 'admin', 0, 'reset');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_messages`
+--
+
+CREATE TABLE `tb_messages` (
+  `id` varchar(50) NOT NULL,
+  `sender` varchar(20) NOT NULL,
+  `receiver` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tb_messages`
+--
+
+INSERT INTO `tb_messages` (`id`, `sender`, `receiver`) VALUES
+('jayatotri', 'jaya', 'tri'),
+('tritojaya', 'tri', 'jaya');
 
 -- --------------------------------------------------------
 
@@ -49,31 +90,31 @@ INSERT INTO `tb_admin` (`id`, `username`, `password`, `sessions`, `reset_code`) 
 --
 
 CREATE TABLE `tb_users` (
-  `id` int(11) NOT NULL,
-  `username` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `status` varchar(6) COLLATE utf8_unicode_ci NOT NULL,
+  `username` varchar(20) NOT NULL,
+  `password` varchar(20) NOT NULL,
+  `status` varchar(6) NOT NULL,
   `sessions` int(11) NOT NULL,
-  `account_status` varchar(7) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `account_status` varchar(7) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `tb_users`
 --
 
-INSERT INTO `tb_users` (`id`, `username`, `password`, `status`, `sessions`, `account_status`) VALUES
-(1, 'tri', '12345678', 'logout', 0, 'enable'),
-(2, 'jaya', 'qwertyui', 'logout', 0, 'enable'),
-(3, 'prasetya', 'zxcvbnm,', 'logout', 0, 'enable'),
-(4, 'adi', '12345678', 'logout', 0, 'enable'),
-(5, 'ali', 'qwertyui', 'logout', 0, 'enable'),
-(6, 'umar', 'iuytrewq', 'logout', 0, 'enable'),
-(7, 'zaid', '87654321', 'logout', 0, 'disable'),
-(9, 'utsman', 'asdfghjk', 'logout', 0, 'enable');
+INSERT INTO `tb_users` (`username`, `password`, `status`, `sessions`, `account_status`) VALUES
+('jaya', 'qwertyui', 'logout', 0, 'enable'),
+('tri', '12345678', 'login', 1, 'enable');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `log_message`
+--
+ALTER TABLE `log_message`
+  ADD PRIMARY KEY (`time`),
+  ADD KEY `fk_message_id` (`message_id`);
 
 --
 -- Indexes for table `tb_admin`
@@ -82,10 +123,18 @@ ALTER TABLE `tb_admin`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tb_messages`
+--
+ALTER TABLE `tb_messages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_sender` (`sender`),
+  ADD KEY `fk_reciver` (`receiver`);
+
+--
 -- Indexes for table `tb_users`
 --
 ALTER TABLE `tb_users`
-  ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`username`),
   ADD UNIQUE KEY `username` (`username`);
 
 --
@@ -99,10 +148,21 @@ ALTER TABLE `tb_admin`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `tb_users`
+-- Constraints for dumped tables
 --
-ALTER TABLE `tb_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- Constraints for table `log_message`
+--
+ALTER TABLE `log_message`
+  ADD CONSTRAINT `fk_message_id` FOREIGN KEY (`message_id`) REFERENCES `tb_messages` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `tb_messages`
+--
+ALTER TABLE `tb_messages`
+  ADD CONSTRAINT `fk_reciver` FOREIGN KEY (`receiver`) REFERENCES `tb_users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_sender` FOREIGN KEY (`sender`) REFERENCES `tb_users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
