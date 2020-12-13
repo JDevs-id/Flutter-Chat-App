@@ -55,7 +55,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     String formattedDate =
         DateFormat('HH:mm dd/MM/yyyy').format(widget.dateTimeNow);
-    //print("getPrefs :$index, $id, $username, $password, $status, $sessions");
+    //print("getPrefs :$username, $password, $status, $sessions");
     return FutureBuilder<List>(
       future: getUser(),
       builder: (context, snapshot) {
@@ -109,7 +109,9 @@ class _HomeState extends State<Home> {
                               ),
                               onPressed: () => Navigator.of(context).push(
                                 PageRouteTransition(
-                                    builder: (context) => Inbox(),
+                                    builder: (context) => Inbox(
+                                          username: username,
+                                        ),
                                     animationType: AnimationType.fade),
                               ),
                             ),
