@@ -10,7 +10,7 @@ import 'package:route_transitions/route_transitions.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_management/menu/messaging/inbox.dart';
-import 'package:user_management/menu/messaging/message.dart';
+import 'package:user_management/menu/messaging/newmessage.dart';
 
 class Home extends StatefulWidget {
   Home({this.signOut, this.dateTimeNow});
@@ -70,7 +70,7 @@ class _HomeState extends State<Home> {
                         child: Icon(Icons.message, color: PrimaryColor),
                         onPressed: () => Navigator.of(context).push(
                               PageRouteTransition(
-                                  builder: (context) => Message(),
+                                  builder: (context) => NewMessage(),
                                   animationType: AnimationType.fade),
                             )),
                   ),

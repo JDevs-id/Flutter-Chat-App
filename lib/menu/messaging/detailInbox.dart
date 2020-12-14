@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:user_management/global/behavior.dart';
@@ -7,8 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:user_management/global/url.dart';
 
 class DetailInbox extends StatefulWidget {
-  DetailInbox({this.data, this.username});
-  final data;
+  DetailInbox({this.sender, this.username});
+  final String sender;
   final String username;
 
   @override
@@ -16,6 +17,7 @@ class DetailInbox extends StatefulWidget {
 }
 
 class _DetailInboxState extends State<DetailInbox> {
+  TextEditingController contMessage = TextEditingController();
   Future<List> getMessages() async {
     final response =
         await http.get("$BASE_URL/getMessages.php?username=${widget.username}");
@@ -25,8 +27,24 @@ class _DetailInboxState extends State<DetailInbox> {
   @override
   Widget build(BuildContext context) {
     void _send() {
+      String formattedTime =
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
       SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
       FocusScope.of(context).unfocus();
+
+      if (contMessage.text != "") {
+        http.post("$BASE_URL/sendMessage.php", body: {
+          "time": formattedTime,
+          "message_id": widget.username + "to" + widget.sender,
+          "message_id_invert": widget.sender + "to" + widget.username,
+          "sender": widget.username,
+          "receiver": widget.sender,
+          "message": contMessage.text
+        });
+        contMessage.text = "";
+      } else {
+        showToastAlert("Input your message");
+      }
     }
 
     return FutureBuilder(
@@ -57,10 +75,34 @@ class _DetailInboxState extends State<DetailInbox> {
                                     )),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    snapshot.data[i]['message'],
-                                    style: TextStyle(color: SecondaryColor),
-                                    textAlign: TextAlign.justify,
+                                  child: Column(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                          snapshot.data[i]['message'],
+                                          style:
+                                              TextStyle(color: SecondaryColor),
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 2),
+                                          child: Text(
+                                            snapshot.data[i]['time'],
+                                            style: TextStyle(
+                                                color:
+                                                    SecondaryColor.withOpacity(
+                                                        0.75),
+                                                fontSize: 8),
+                                            textAlign: TextAlign.justify,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -77,10 +119,32 @@ class _DetailInboxState extends State<DetailInbox> {
                                     )),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    snapshot.data[i]['message'],
-                                    style: TextStyle(color: PrimaryColor),
-                                    textAlign: TextAlign.justify,
+                                  child: Column(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                          snapshot.data[i]['message'],
+                                          style: TextStyle(color: PrimaryColor),
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 2),
+                                          child: Text(
+                                            snapshot.data[i]['time'],
+                                            style: TextStyle(
+                                                color: PrimaryColor.withOpacity(
+                                                    0.75),
+                                                fontSize: 8),
+                                            textAlign: TextAlign.justify,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -94,7 +158,7 @@ class _DetailInboxState extends State<DetailInbox> {
                       height: MediaQuery.of(context).size.height * 0.05,
                       child: Center(
                           child: Text(
-                        widget.data[0]['sender'].toUpperCase(),
+                        widget.sender.toUpperCase(),
                         style: TextStyle(
                             color: PrimaryColor, fontWeight: FontWeight.w900),
                       ))),
@@ -110,6 +174,7 @@ class _DetailInboxState extends State<DetailInbox> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextField(
+                            controller: contMessage,
                             textInputAction: TextInputAction.go,
                             onSubmitted: (_) {
                               _send();

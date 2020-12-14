@@ -99,7 +99,7 @@ class _InboxState extends State<Inbox> {
                               onTap: () => Navigator.of(context).push(
                                 PageRouteTransition(
                                     builder: (context) => DetailInbox(
-                                          data: snapshot.data,
+                                          sender: snapshot.data[i]['sender'],
                                           username: widget.username,
                                         ),
                                     animationType: AnimationType.fade),
