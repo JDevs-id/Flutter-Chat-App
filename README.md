@@ -1,4 +1,4 @@
-# ChatApp with CodeIgniter 3 User Management as backend panel
+# ChatApp with CodeIgniter 3 User Management as a Panel
 It's an old Flutter project.
 
 ## Introduction
