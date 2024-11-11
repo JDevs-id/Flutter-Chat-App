@@ -1,12 +1,11 @@
-# UserManagement
+# ChatApp with CodeIgniter 3 User Management as backend panel
+It's an old Flutter project.
 
-A new Flutter project.
+## Introduction
+This project is a Flutter app application that integrates with C3_UserManagement (https://github.com/JDevs-id/C3_UsersManagement) as a simple user management system.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
+## How to get started
+Here are a few resources to get you started if this is your first Flutter project:
 
 - [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
